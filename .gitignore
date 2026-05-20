@@ -1,0 +1,43 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Build
+target/
+build/
+dist/
+out/
+*.class
+*.jar
+*.war
+
+# Node
+node_modules/
+.pnpm-store/
+
+# Docker data volumes
+data/mysql/
+data/loki/
+data/grafana/
+data/logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# HertzBeat home site (not our code)
+hertzbeat/home/
+
+# Trae specs (internal)
+.trae/

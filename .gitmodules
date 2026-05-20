@@ -1,0 +1,3 @@
+[submodule "hertzbeat"]
+	path = hertzbeat
+	url = https://github.com/apache/hertzbeat.git
