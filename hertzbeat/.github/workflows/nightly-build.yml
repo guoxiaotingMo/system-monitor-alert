@@ -1,0 +1,81 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Nightly CI
+
+on:
+  schedule:
+    # trigger at 00:00 everyday
+    - cron: '0 0 * * *'
+  push:
+    branches: [ action* ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'apache/hertzbeat' }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./script/ci/github-actions/setup-deps
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: pnpm
+        cache-dependency-path: web-app/pnpm-lock.yaml
+
+    - name: Build the Frontend
+      run: |
+        cd web-app
+        pnpm install
+        pnpm package
+
+    - name: Build the Backend
+      run: |
+        mvnd -B clean package -Prelease,Pcluster -Dmaven.test.skip=false --file pom.xml
+
+    - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
+    - uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd
+    - name: Log in to Docker Hub
+      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and Push Server
+      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294
+      with:
+        context: ./dist
+        file: ./script/docker/server/Dockerfile
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: apache/hertzbeat:nightly
+
+    - name: Build and Push Collector
+      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294
+      with:
+        context: ./dist
+        file: ./script/docker/collector/Dockerfile
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: apache/hertzbeat-collector:nightly
