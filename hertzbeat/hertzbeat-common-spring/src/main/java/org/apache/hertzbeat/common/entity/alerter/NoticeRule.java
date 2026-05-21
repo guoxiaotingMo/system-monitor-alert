@@ -100,6 +100,11 @@ public class NoticeRule {
     @Size(max = 100)
     private String templateName;
 
+    @Schema(title = "Project ID this rule belongs to",
+            description = "Project ID for project-level notification policy isolation",
+            example = "1", accessMode = READ_WRITE)
+    private Long projectId;
+
     @Schema(title = "Whether to enable this policy",
             description = "Whether to enable this policy",
             example = "true", accessMode = READ_WRITE)

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="LOKI" class="org.apache.hertzbeat.log.loki.LokiLogbackAppender">
+        <lokiUrl>http://localhost:3100</lokiUrl>
+        <projectName>my-project</projectName>
+        <serviceName>my-service</serviceName>
+        <environment>prod</environment>
+        <batchSize>100</batchSize>
+        <flushIntervalMs>5000</flushIntervalMs>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="LOKI"/>
+    </root>
+</configuration>

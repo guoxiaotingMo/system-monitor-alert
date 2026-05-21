@@ -278,6 +278,11 @@ public interface CommonConstants {
     String CACHE_ALERT_INHIBIT = "alert_inhibit";
 
     /**
+     * cache key alert escalation
+     */
+    String CACHE_ALERT_ESCALATION = "alert_escalation";
+
+    /**
      * collector status online 0
      */
     byte COLLECTOR_STATUS_ONLINE = 0;

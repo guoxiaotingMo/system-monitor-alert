@@ -53,7 +53,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "hzb_monitor", indexes = {
         @Index(name = "idx_hzb_monitor_app", columnList = "app"),
         @Index(name = "idx_hzb_monitor_instance", columnList = "instance"),
-        @Index(name = "idx_hzb_monitor_name", columnList = "name")
+        @Index(name = "idx_hzb_monitor_name", columnList = "name"),
+        @Index(name = "idx_hzb_monitor_project", columnList = "projectId")
 })
 @Data
 @Builder
@@ -86,6 +87,9 @@ public class Monitor {
     @Size(max = 100)
     @HostValid
     private String instance;
+
+    @Schema(title = "Project ID this monitor belongs to", example = "1", accessMode = READ_WRITE)
+    private Long projectId;
 
     @Schema(title = "Monitoring of the acquisition interval time in seconds", example = "600", accessMode = READ_WRITE)
     @Min(10)

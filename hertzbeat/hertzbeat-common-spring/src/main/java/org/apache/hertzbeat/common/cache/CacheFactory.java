@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.List;
 import org.apache.hertzbeat.common.constants.CommonConstants;
 import org.apache.hertzbeat.common.entity.alerter.AlertDefine;
+import org.apache.hertzbeat.common.entity.alerter.AlertEscalation;
 import org.apache.hertzbeat.common.entity.alerter.AlertSilence;
 import org.apache.hertzbeat.common.entity.alerter.NoticeRule;
 
@@ -135,5 +136,29 @@ public final class CacheFactory {
     public static void clearAlertDefineCache() {
         clearLogAlertDefineCache();
         clearMetricsAlertDefineCache();
+    }
+
+    /**
+     * get alert escalation cache
+     * @return caffeine cache
+     */
+    @SuppressWarnings("unchecked")
+    public static List<AlertEscalation> getAlertEscalationCache() {
+        return (List<AlertEscalation>) COMMON_CACHE.get(CommonConstants.CACHE_ALERT_ESCALATION);
+    }
+
+    /**
+     * set alert escalation cache
+     * @param alertEscalations escalation rules
+     */
+    public static void setAlertEscalationCache(List<AlertEscalation> alertEscalations) {
+        COMMON_CACHE.put(CommonConstants.CACHE_ALERT_ESCALATION, alertEscalations);
+    }
+
+    /**
+     * clear alert escalation cache
+     */
+    public static void clearAlertEscalationCache() {
+        COMMON_CACHE.remove(CommonConstants.CACHE_ALERT_ESCALATION);
     }
 }
